@@ -1,4 +1,6 @@
 #!/bin/bash
 git add .
-git commit -m"Created a new file"
+echo "Enter a commit message"
+read message
+git commit -m "$(message)"
 git push
