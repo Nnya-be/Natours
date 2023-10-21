@@ -16,7 +16,8 @@ app.get('/api/v1/tours', (req, res)=>{
         results:tours.length,
         data: {
             tours
-        }
+        },
+        fields:"No stated fields"
     })
 });
 
