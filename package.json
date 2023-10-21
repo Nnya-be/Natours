@@ -1,0 +1,23 @@
+{
+  "name": "natours",
+  "version": "1.0.0",
+  "description": "A farm project for learning node and express with mongoDB",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://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@github.com/Nnya-be/Natours.git"
+  },
+  "author": "Solomon Chamamme",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Nnya-be/Natours/issues"
+  },
+  "homepage": "https://github.com/Nnya-be/Natours#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "nodemon": "^3.0.1"
+  }
+}
