@@ -8,11 +8,11 @@ As much as this project is to teach me a lot on the creation of Rest API's and h
 - Javascript
 - HTML
 - CSS
-- Node.js
 
 ## FRAMEWOKS
 - mongoose
 - express.js
+- Node.js
 
 ## DATABASE
 - mongoDB
