@@ -16,8 +16,7 @@ app.get('/api/v1/tours', (req, res)=>{
         results:tours.length,
         data: {
             tours
-        },
-        fields:"No stated fields"
+        }
     })
 });
 
@@ -40,7 +39,7 @@ app.post('/api/v1/tours', (req, res)=>{
 //starting up a server
 const port = 3000;
 app.listen(port , () => {
-    console.log(`App is listening on the ${port}`);
+    console.log(`App listening on port:${port}`);
 });
 
 
