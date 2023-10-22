@@ -4,83 +4,94 @@ const app = express();
 
 app.use(express.json());
 
-const getAllTours = (req, res)=>{
-    res.status(200).json({
-        status: "success",
-        results:tours.length,
-        data: {
-            tours
-        }
-    })
-}
+//Creating my own middleware
+app.use((req, res, next) => {
+  console.log('Hey this is my middleware');
+  next();
+});
 
-const getTour =  (req, res)=>{
-    console.log(req.params);
-    const id = req.params.id * 1;
-    const tour = tours.find(el => el.id === id);
+const getAllTours = (req, res) => {
+  res.status(200).json({
+    status: 'success',
+    results: tours.length,
+    data: {
+      tours,
+    },
+  });
+};
 
-    if (!tour){
-        return res.status(404).json({
-            status: 'fail',
-            message: "Invalid ID"
-        })
-    }
+const getTour = (req, res) => {
+  console.log(req.params);
+  const id = req.params.id * 1;
+  const tour = tours.find((el) => el.id === id);
 
+  if (!tour) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID',
+    });
+  }
 
-    res.status(200).json({
+  res.status(200).json({
+    status: 'success',
+    data: {
+      tour,
+    },
+  });
+};
+
+const createTour = (req, res) => {
+  const newID = tours[tours.length - 1].id + 1;
+  const newTour = Object.assign({ id: newID }, req.body);
+
+  tours.push(newTour);
+  fs.writeFile(
+    `${__dirname}/dev-data/data/tours-simple.json`,
+    JSON.stringify(tours),
+    (err) => {
+      res.status(201).json({
         status: 'success',
         data: {
-            tour
-        }
-    });
-}
-
-const createTour = (req, res)=>{
-    const newID = tours[tours.length-1].id + 1;
-    const newTour = Object.assign({id: newID}, req.body);
-
-    tours.push(newTour);
-    fs.writeFile(`${__dirname}/dev-data/data/tours-simple.json`, JSON.stringify(tours), err =>{
-        res.status(201).json({
-            status : 'success',
-            data:{
-                tour: newTour
-            }
-        });
-    });
-}
-
-const updateTour = (req,res)=>{
-    if (req.params.id * 1 > tours.length){
-        return res.status(404).json({
-            status : 'Bad Request',
-            message : "Failed to patch"
-        })
+          tour: newTour,
+        },
+      });
     }
-    res.status(200).json({
-        status: 'success',
-        message: "It was updated successfully",
-        data:{
-            tour : 'Updated part'
-        }
-    })
-}
+  );
+};
 
-const deleteTour = (req, res) =>{
-    if (req.params.id * 1 > tours.length) {
-        return res.status(404).json({
-            status: "Fail",
-            message : "Couldn't find the tour"
-        });
-    }
-
-    res.status(204).json({
-        status : 'success',
-        data : null
+const updateTour = (req, res) => {
+  if (req.params.id * 1 > tours.length) {
+    return res.status(404).json({
+      status: 'Bad Request',
+      message: 'Failed to patch',
     });
-}
+  }
+  res.status(200).json({
+    status: 'success',
+    message: 'It was updated successfully',
+    data: {
+      tour: 'Updated part',
+    },
+  });
+};
+
+const deleteTour = (req, res) => {
+  if (req.params.id * 1 > tours.length) {
+    return res.status(404).json({
+      status: 'Fail',
+      message: "Couldn't find the tour",
+    });
+  }
+
+  res.status(204).json({
+    status: 'success',
+    data: null,
+  });
+};
 //Reading the tours json file
-const tours = JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`));
+const tours = JSON.parse(
+  fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
+);
 
 app.route('/api/v1/tours').get(getAllTours).post(createTour);
 
@@ -88,10 +99,9 @@ app.route('api/v1/tours/:id').get(getTour).patch(updateTour).delete(deleteTour);
 
 //starting up a server
 const port = 3000;
-app.listen(port , () => {
-    console.log(`App listening on port:${port}`);
+app.listen(port, () => {
+  console.log(`App listening on port:${port}`);
 });
-
 
 /** 
 //basic routing
