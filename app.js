@@ -77,6 +77,20 @@ app.patch('/api/v1/tours/:id', (req,res)=>{
     })
 });
 
+//Handling the Delete Request
+app.delete('/api/v1/tours/:id', (req, res) =>{
+    if (req.params.id * 1 > tours.length) {
+        return res.status(404).json({
+            status: "Fail",
+            message : "Couldn't find the tour"
+        });
+    }
+
+    res.status(204).json({
+        status : 'success',
+        data : null
+    });
+});
 
 //starting up a server
 const port = 3000;
