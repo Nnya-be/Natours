@@ -1,4 +1,3 @@
-
 const express = require('express');
 const morgan = require('morgan');
 const app = express();
@@ -9,13 +8,13 @@ app.use(express.json());
 
 // Calling the morgan middleware for testing
 app.use(morgan('dev'));
-
 //Creating my own middleware
 app.use((req, res, next) => {
   console.log('Hey this is my middleware');
   next();
 });
 
+app.use(express.static(`${__dirname}/public`));
 
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
