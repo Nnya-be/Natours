@@ -16,6 +16,20 @@ exports.checkID = (req, res, next, value) => {
   next();
 };
 
+exports.checkBody = (req, res, next) => {
+  const body = req.body.name;
+  const price = req.body.price;
+  if (!body || !price) {
+    return res.status(400).json({
+      status: 'failed',
+      message: 'Trying to create a tour without a body or price',
+    });
+  }
+
+  next();
+};
+
+
 exports.getAllTours = (req, res) => {
   res.status(200).json({
     status: 'success',
