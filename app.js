@@ -60,6 +60,24 @@ app.post('/api/v1/tours', (req, res)=>{
     });
 });
 
+//Handling the updating of the API
+app.patch('/api/v1/tours/:id', (req,res)=>{
+    if (req.params.id * 1 > tours.length){
+        return res.status(404).json({
+            status : 'Bad Request',
+            message : "Failed to patch"
+        })
+    }
+    res.status(200).json({
+        status: 'success',
+        message: "It was updated successfully",
+        data:{
+            tour : 'Updated part'
+        }
+    })
+});
+
+
 //starting up a server
 const port = 3000;
 app.listen(port , () => {
