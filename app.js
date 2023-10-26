@@ -8,7 +8,7 @@ app.use(express.json());
 
 // Calling the morgan middleware for testing
 if (process.env.NODE_ENV === 'development') {
-    app.use(morgan('dev'));
+  app.use(morgan('dev'));
 }
 //Creating my own middleware
 app.use((req, res, next) => {
