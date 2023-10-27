@@ -33,7 +33,7 @@ exports.getTour = (req, res) => {
   //   data: {
   //     tour,
   //   },
-  });
+  // });
 };
 
 exports.createTour = (req, res) => {

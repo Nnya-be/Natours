@@ -22,5 +22,4 @@ testTour
     console.log(err);
   });
 
-
-module.exports = Tour; 
+module.exports = Tour;
