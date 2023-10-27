@@ -5,13 +5,17 @@ dotenv.config({
 });
 const app = require('./app');
 
-// const DB = process.env.DATABASE.replace('<password>', process.env.DB_PASSWORD);
+const DB = process.env.DATABASE.replace('<password>', process.env.DB_PASSWORD);
 mongoose.connect(
-  'mongodb+srv://akwasioburo:hCEpC0ZTH5tuNpnN@cluster0.fioiej5.mongodb.net/?retryWrites=true&w=majority',{
+  DB,{
     useNewUrlParser: true,
       useUnifiedTopology: true,
   }
 );
+
+const tourSchema = new mongoose.Schema({
+  
+})
 
 // .then((con) => {
 //   console.log(con.connections);
