@@ -6,16 +6,19 @@ dotenv.config({
 const app = require('./app');
 
 const DB = process.env.DATABASE.replace('<password>', process.env.DB_PASSWORD);
-mongoose.connect(
-  DB,{
-    useNewUrlParser: true,
-      useUnifiedTopology: true,
-  }
-);
+mongoose.connect(DB, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+});
 
 const tourSchema = new mongoose.Schema({
-  
-})
+  name: { type: String, required: true, unique: true },
+  rating: { type: Number, default: 4.5 },
+  price: { type: Number, required: [true, 'A tour must have a price'] },
+});
+
+const Tour = mongoose.model('Tour', tourSchema);
 
 // .then((con) => {
 //   console.log(con.connections);
