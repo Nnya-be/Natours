@@ -11,14 +11,18 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 //Creating my own middleware
-app.use((req, res, next) => {
-  next();
-});
 
 app.use(express.static(`${__dirname}/public`));
 
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
+
+app.all('*', (req, res, next) => {
+  res.status(404).json({
+    status: 'fail',
+    message: `Can't find ${req.originalUrl} on this server`,
+  });
+});
 
 module.exports = app;
 //starting up a server
@@ -37,9 +41,12 @@ app.get('/', (req, res)=>{
 
 app.post('/', (req, res)=>{
     res.send('You can post to this endpoint');
-});
-
-//Handling the get request of the server
+  });
+  // app.use((req, res, next) => {
+  //   next();
+  // });
+  
+  //Handling the get request of the server
 app.get('/api/v1/tours', getAllTours);
 
 
