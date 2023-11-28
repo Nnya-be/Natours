@@ -31,6 +31,7 @@ const userSchema = new mongoose.Schema({
       message: 'Passwords must be equal',
     },
   },
+  passwordChangedAt: Date,
 });
 
 userSchema.pre('save', async function (next) {
@@ -40,8 +41,20 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-userSchema.methods.checkPassword = async function(doc_password, user_password){
+userSchema.methods.checkPassword = async function (
+  doc_password,
+  user_password,
+) {
   return await bcrypt.compare(doc_password, user_password);
-}
+};
+
+userSchema.methods.changedPassword = function (JWTtime) {
+  if (this.passwordChangedAt) {
+    const time = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
+  return JWTtime < time;
+  }
+
+  return false;
+};
 const User = mongoose.model('User', userSchema);
 module.exports = User;
