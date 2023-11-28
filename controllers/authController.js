@@ -72,22 +72,31 @@ exports.protect = catchAsync(async (req, res, next) => {
   ) {
     token = req.headers.authorization.split(' ')[1];
   }
-  console.log(token);
+  // console.log(token);
   if (!token) return next(new AppError('Please Log in!', 401));
   /** verify the token */
   const decoded = await promisify(jwt.verify)(token, process.env.JWTSECRETE);
 
   /** Chech if the user still exitst */
-  const userAccount = await User.findById(decode.id);
+  const userAccount = await User.findById(decoded.id);
 
   if (!userAccount) {
     return next(new AppError('Invalid Credentials! No user found', 401));
   }
   /** Check if pssword has be changed since token issued date. */
 
-  if (userAccount.changedPassword(decode.iat))
+  if (userAccount.changedPassword(decoded.iat))
     return new AppError('Invalid Credentials! Password changed', 401);
-  
+
   req.user = userAccount;
-    next();
+  next();
 });
+
+exports.restrictTo = (...role) => {
+  return async (res, req, next) => {
+    // console.log(role);
+    if (!role.includes(req.user.role))
+      return next(new AppError('Permission denied for this action!', 403));
+    next();
+  };
+};
