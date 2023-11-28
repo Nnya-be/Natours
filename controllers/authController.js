@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const { promisify } = require('util');
 const bcrypt = require('bcryptjs');
 const User = require('../models/userModel');
 const catchAsync = require('../utils/catchAsync');
@@ -60,4 +61,33 @@ exports.logIn = catchAsync(async (req, res, next) => {
     status: 'success',
     token,
   });
+});
+
+exports.protect = catchAsync(async (req, res, next) => {
+  let token;
+  /** Get token from the header and check if it exitst. */
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer')
+  ) {
+    token = req.headers.authorization.split(' ')[1];
+  }
+  console.log(token);
+  if (!token) return next(new AppError('Please Log in!', 401));
+  /** verify the token */
+  const decoded = await promisify(jwt.verify)(token, process.env.JWTSECRETE);
+
+  /** Chech if the user still exitst */
+  const userAccount = await User.findById(decode.id);
+
+  if (!userAccount) {
+    return next(new AppError('Invalid Credentials! No user found', 401));
+  }
+  /** Check if pssword has be changed since token issued date. */
+
+  if (userAccount.changedPassword(decode.iat))
+    return new AppError('Invalid Credentials! Password changed', 401);
+  
+  req.user = userAccount;
+    next();
 });
