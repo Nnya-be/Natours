@@ -100,3 +100,20 @@ exports.restrictTo = (...role) => {
     next();
   };
 };
+
+exports.forgotPassword = (res, req, next) => {
+  /** Get user email field from the body */
+  const userEmail = req.body.email;
+
+  /** Query for the user document */
+  const userDocument = User.findOne({ email: userEmail });
+  /** Chech if the email or no document of the email exist. */
+
+  if (!userDocument || !userEmail) {
+    return next(new AppError('Wrong Credentials', 401));
+  }
+
+  /**  */
+
+  console.log(userDocument);
+};
