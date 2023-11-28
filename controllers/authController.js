@@ -17,6 +17,7 @@ exports.signUp = catchAsync(async (req, res, next) => {
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
   });
+
   token = signToken(newUser);
   res.status(200).json({
     status: 'Success',
@@ -101,7 +102,7 @@ exports.restrictTo = (...role) => {
   };
 };
 
-exports.forgotPassword = (res, req, next) => {
+exports.forgotPassword = catchAsync(async (req, res, next) => {
   /** Get user email field from the body */
   const userEmail = req.body.email;
 
@@ -113,7 +114,11 @@ exports.forgotPassword = (res, req, next) => {
     return next(new AppError('Wrong Credentials', 401));
   }
 
-  /**  */
+  const resetToken = userDocument.createPasswordResetToken();
+  await userDocument.save({ validateBeforeSave: false });
+  /** Check and send token to user email*/
 
-  console.log(userDocument);
-};
+  // console.log(userDocument);
+});
+
+exports.resetPassword = catchAsync(async (req, res, next) => {});
