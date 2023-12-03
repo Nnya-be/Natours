@@ -4,6 +4,8 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/userModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
+const sendEmail = require('../utils/email');
+const crypto = require('crypto');
 const signToken = (user) => {
   return jwt.sign({ id: user._id }, process.env.JWTSECRETE, {
     expiresIn: process.env.JWTEXPIRE,
@@ -118,7 +120,38 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   await userDocument.save({ validateBeforeSave: false });
   /** Check and send token to user email*/
 
+  const resetURL = `${req.protcol}://${req.get(
+    'host',
+  )}/api/v1/users/resetPassword/${resetToken}`;
+
+  const message = `Forgot your password? Submit your request with your new password and Confirm. If your didn't, please ignore`;
   // console.log(userDocument);
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: 'Your password reset Token (valid for 10min)',
+      message,
+    });
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Token sent to the email',
+    });
+  } catch (err) {
+    user.passwordResetToken = undefined;
+    user.passwordResetExpirest = undefined;
+    await user.save({ validateBeforeSave: false });
+    return next(new AppError('Error while sending Email', 500));
+  }
 });
 
-exports.resetPassword = catchAsync(async (req, res, next) => {});
+exports.resetPassword = catchAsync(async (req, res, next) => {
+  /** Get user  based on token */
+  const hasedToken = crypto.createHash('sha256').update(req.params.token);
+  /** If the token has not experied then set the new password */
+
+  /** Update the changed at property */
+
+  /** Log user in */
+  return next();
+});
