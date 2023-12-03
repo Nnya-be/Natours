@@ -12,6 +12,16 @@ const signToken = (user) => {
   });
 };
 
+const createToken = (user, statusCode, res) => {
+  const token = signToken(user);
+  res.status(statusCode).json({
+    status: 'success',
+    token,
+    data: {
+      user,
+    },
+  });
+};
 exports.signUp = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
     name: req.body.name,
@@ -20,14 +30,15 @@ exports.signUp = catchAsync(async (req, res, next) => {
     passwordConfirm: req.body.passwordConfirm,
   });
 
-  token = signToken(newUser);
-  res.status(200).json({
-    status: 'Success',
-    token,
-    data: {
-      user: newUser,
-    },
-  });
+  createToken(newUser, 201, res);
+  // token = signToken(newUser);
+  // res.status(200).json({
+  //   status: 'Success',
+  //   token,
+  //   data: {
+  //     user: newUser,
+  //   },
+  // });
 });
 
 exports.logIn = catchAsync(async (req, res, next) => {
@@ -58,12 +69,13 @@ exports.logIn = catchAsync(async (req, res, next) => {
     return next(new AppError('Incorrect Password or Email!', 400));
 
   /** IF there is all correct Then send token. */
-  token = signToken(user_found);
+  // token = signToken(user_found);
 
-  res.status(200).json({
-    status: 'success',
-    token,
-  });
+  // res.status(200).json({
+  //   status: 'success',
+  //   token,
+  // });
+  createToken(user_found, 200, res);
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
@@ -139,7 +151,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     });
   } catch (err) {
     user.passwordResetToken = undefined;
-    user.passwordResetExpirest = undefined;
+    user.passwordResetExpiration = undefined;
     await user.save({ validateBeforeSave: false });
     return next(new AppError('Error while sending Email', 500));
   }
@@ -147,11 +159,54 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
 exports.resetPassword = catchAsync(async (req, res, next) => {
   /** Get user  based on token */
-  const hasedToken = crypto.createHash('sha256').update(req.params.token);
-  /** If the token has not experied then set the new password */
+  const hasedToken = crypto
+    .createHash('sha256')
+    .update(req.params.token)
+    .digest('hex');
 
+  const user = await User.findOne({
+    passwordResetToken: hasedToken,
+    passwordResetExpiration: { $gt: Date.now() },
+  });
+  /** If the token has not experied then set the new password */
+  if (!user) {
+    return next(new AppError('Invalid Token', 400));
+  }
+  user.password = req.body.password;
+  user.passwordConfirm = req.body.passwordConfirm;
+
+  user.passwordResetExpiration = undefined;
+  user.passwordResetToken = undefined;
+
+  await user.save();
   /** Update the changed at property */
 
   /** Log user in */
-  return next();
+  // const token = signToken(user._id);
+  // res.status(200).json({
+  //   status: 'success',
+  //   token,
+  // });
+  createToken(user, 200, res);
+});
+
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  /** Get user from the collection */
+  const user = await User.findById(req.user.id).select('+password');
+
+  /** Check if the password is correct */
+  if (!(await user.checkPassword(req.body.passwordCurrent, user.password))) {
+    return next(new AppError('Invalid Password!', 401));
+  }
+  /** Update the password */
+
+  user.password = req.body.password;
+  user.passwordConfirm = req.body.passwordConfirm;
+
+  await user.save();
+
+  /** Log user in */
+  // const token = signToken(user._id);
+  // res.status(200).json({});
+  createToken(user, 200, res);
 });
