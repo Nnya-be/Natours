@@ -6,7 +6,7 @@ const authController = require('../controllers/authController');
 router.post('/signup', authController.signUp);
 router.post('/login', authController.logIn);
 router.post('/forgotPassword', authController.forgotPassword);
-// router.post('/resetPassword', authController.resetPassowrd);
+router.patch('/resetPassword/:token', authController.resetPassword);
 router
   .route('/')
   .get(userController.getAllUsers)
