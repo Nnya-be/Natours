@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 const validator = require('validator');
-// const User = require('./userModel');
 
 const tourSchema = new mongoose.Schema(
   {
@@ -133,12 +132,9 @@ tourSchema.pre('/^find/', function (next) {
 //   console.log('Will save Documents');
 //   next();
 // });
-
 // tourSchema.post('save', function (doc, next) {
 //   console.log(doc);
-
-//   next();
-// });
+//   next();// });
 
 // A Query middleware
 tourSchema.pre(/^find/, function (next) {
