@@ -6,11 +6,11 @@ const bcrypt = require('bcryptjs');
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    require: [true, 'Any person needs a name'],
+    required: [true, 'Any person needs a name'],
   },
   email: {
     type: String,
-    require: [true, 'Please input an email'],
+    required: [true, 'Please input an email'],
     unique: true,
     lowercase: true,
     validate: [validator.isEmail, 'Please input a valid Email Account'],
@@ -23,13 +23,13 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    require: [true, 'Please input a string password!'],
+    required: [true, 'Please input a string password!'],
     minlength: [8, 'Passwords must be more than 8 characters'],
     select: false,
   },
   passwordConfirm: {
     type: String,
-    require: [true, 'Please confirm your password'],
+    required: [true, 'Please confirm your password'],
     validate: {
       validator: function (doc) {
         return this.password === doc;
