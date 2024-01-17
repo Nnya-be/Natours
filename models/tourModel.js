@@ -112,6 +112,13 @@ tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
 
+//virtually populating in the tour from review.
+tourSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'tour',
+  localField: '_id',
+});
+
 //A Document middleware to run before the save and create command
 
 tourSchema.pre('save', function (next) {
@@ -120,7 +127,7 @@ tourSchema.pre('save', function (next) {
   next();
 });
 
-tourSchema.pre('/^find/', function (next) {
+tourSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'guides',
     select: '-__v -passwordChangedAt',
