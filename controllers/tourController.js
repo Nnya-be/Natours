@@ -15,7 +15,8 @@ exports.aliasTopTours = (req, res, next) => {
   next();
 };
 
-exports.createTour = catchAsync(async (req, res, next) => {
+exports.createTour = factory.createOne(Tour);
+/**catchAsync(async (req, res, next) => {
   const newTour = await Tour.create(req.body);
 
   res.status(201).json({
@@ -25,6 +26,7 @@ exports.createTour = catchAsync(async (req, res, next) => {
     },
   });
 });
+*/
 exports.getAllTours = catchAsync(async (req, res, next) => {
   const features = new APIFeatures(Tour.find(), req.query)
     .filter()
@@ -56,7 +58,8 @@ exports.getTour = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.updateTour = catchAsync(async (req, res, next) => {
+exports.updateTour = factory.deleteOne(Tour);
+/**catchAsync(async (req, res, next) => {
   const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true,
@@ -70,7 +73,7 @@ exports.updateTour = catchAsync(async (req, res, next) => {
     },
   });
 });
-
+*/
 exports.deleteTour = factory.deleteOne(Tour);
 
 // exports.deleteTour = catchAsync(async (req, res, next) => {
