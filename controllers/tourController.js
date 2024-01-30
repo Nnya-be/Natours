@@ -14,6 +14,7 @@ exports.aliasTopTours = (req, res, next) => {
   req.query.fields = 'name,price,ratingsAverage,summary,difficulty';
   next();
 };
+exports.getTour = factory.getOne(Tour, { path: 'reviews' });
 
 exports.createTour = factory.createOne(Tour);
 /**catchAsync(async (req, res, next) => {
@@ -27,7 +28,8 @@ exports.createTour = factory.createOne(Tour);
   });
 });
 */
-exports.getAllTours = catchAsync(async (req, res, next) => {
+exports.getAllTours = factory.getAll(Tour);
+/**catchAsync(async (req, res, next) => {
   const features = new APIFeatures(Tour.find(), req.query)
     .filter()
     .sort()
@@ -43,8 +45,8 @@ exports.getAllTours = catchAsync(async (req, res, next) => {
     },
   });
 });
-
-exports.getTour = catchAsync(async (req, res, next) => {
+*/
+/** exports.getTour = catchAsync(async (req, res, next) => {
   const tour = await Tour.findById(req.params.id).populate('reviews');
 
   if (!tour) {
@@ -57,7 +59,7 @@ exports.getTour = catchAsync(async (req, res, next) => {
     },
   });
 });
-
+*/
 exports.updateTour = factory.deleteOne(Tour);
 /**catchAsync(async (req, res, next) => {
   const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
