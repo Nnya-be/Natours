@@ -20,8 +20,13 @@ exports.getAllReviews = catchAsync(async (req, res, next) => {
 
   next();
 });
-
-exports.createReview = catchAsync(async (req, res, next) => {
+exports.setTourUserIds = (req, res, next) => {
+  if (!req.body.tour) req.body.tour = req.params.tourId;
+  if (!req.body.user) req.body.user = req.user.id;
+  next();
+};
+exports.createReview = factory.createOne(Review);
+/**catchAsync(async (req, res, next) => {
   //setting info for the nested routes.
   if (!req.body.tour) req.body.tour = req.params.tourId;
   if (!req.body.user) req.body.user = req.user.id;
@@ -34,7 +39,7 @@ exports.createReview = catchAsync(async (req, res, next) => {
     },
   });
 });
-
+*/
 exports.getReview = catchAsync(async (req, res, next) => {
   const review = await Review.findById(req.params.id);
 
