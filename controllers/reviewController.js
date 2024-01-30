@@ -3,7 +3,9 @@ const Review = require('../models/reviewModel');
 const AppError = require('../utils/appError');
 const factory = require('./handlerFactory');
 
-exports.getAllReviews = catchAsync(async (req, res, next) => {
+exports.getAllReviews = factory.getAll(Review)
+
+/**catchAsync(async (req, res, next) => {
   let fileter = {};
   if (req.params.tourId) {
     filter = { tour: req.params.tourId };
@@ -20,6 +22,7 @@ exports.getAllReviews = catchAsync(async (req, res, next) => {
 
   next();
 });
+*/
 exports.setTourUserIds = (req, res, next) => {
   if (!req.body.tour) req.body.tour = req.params.tourId;
   if (!req.body.user) req.body.user = req.user.id;
@@ -40,7 +43,8 @@ exports.createReview = factory.createOne(Review);
   });
 });
 */
-exports.getReview = catchAsync(async (req, res, next) => {
+exports.getReview = factory.getOne(Review);
+/**catchAsync(async (req, res, next) => {
   const review = await Review.findById(req.params.id);
 
   if (!review) {
@@ -52,6 +56,6 @@ exports.getReview = catchAsync(async (req, res, next) => {
       review,
     },
   });
-});
+});*/
 exports.updateReview = factory.updateOne(Review);
 exports.deleteReview = factory.deleteOne(Review);
