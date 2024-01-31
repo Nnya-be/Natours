@@ -18,8 +18,13 @@ router.get(
   userController.getMe,
   userController.getUser,
 );
-router.patch('/updateInfo', authController.protect, userController.updateMe);
-router.delete('/deleteUser', authController.protect, userController.deleteMe);
+// protects all routes after that middleware
+router.use(authController.protect);
+
+router.patch('/updateInfo', userController.updateMe);
+router.delete('/deleteUser', userController.deleteMe);
+
+router.use(authController.restrictTo('admin'));
 router
   .route('/')
   .get(userController.getAllUsers)
