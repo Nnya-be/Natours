@@ -18,7 +18,7 @@ router.get(
   userController.getMe,
   userController.getUser,
 );
-// protects all routes after that middleware
+// protects all routes after this middleware
 router.use(authController.protect);
 
 router.patch('/updateInfo', userController.updateMe);
